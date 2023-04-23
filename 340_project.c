@@ -13,7 +13,7 @@ char arrChars2 [arraySize][arraySize];
 double calcTimeMemory(double array[]);
 
 int main() {
-	double arrayOfTimes[arraySize];
+	double timeArray[arraySize];
 
 
 	double calcBlockSize = blockSize();
