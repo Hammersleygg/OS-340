@@ -13,11 +13,17 @@ char arrChars2 [arraySize][arraySize];
 double calcTimeMemory(double array[]);
 
 int main() {
+	double arrayOfTimes[arraySize];
+
+
 	double calcBlockSize = blockSize();
 	printf("Block size is: %1f\n", calcBlockSize);
 	
 	double calcCacheSize = cacheSize(calcBlockSize);
 	printf("Cache size is: %1f\n", calcCacheSize);
+	
+	double modeMainMem = calcTimeMemory(timeArray);
+	printf("Maim memory reference takes %f nanoseconds\n", modeMainMem * 1000000000);
 }
 
 double blockSize(){
