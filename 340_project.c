@@ -11,6 +11,8 @@ double cacheSize(double byteSize);
 char arrChars [arraySize][arraySize];
 char arrChars2 [arraySize][arraySize];
 double calcTimeMemory(double array[]);
+double calcTimeCache(double timeArray[]);
+double modeCalc(double timeArray[]);
 
 int main() {
 	double timeArray[arraySize];
@@ -23,6 +25,9 @@ int main() {
 	printf("Cache size is: %1f\n", calcCacheSize);
 	
 	double modeMainMem = calcTimeMemory(timeArray);
+	printf("Maim memory reference takes %f nanoseconds\n", modeMainMem * 1000000000);
+	
+	double modeCacheMem = calcTimeCache(timeArray);
 	printf("Maim memory reference takes %f nanoseconds\n", modeMainMem * 1000000000);
 }
 
@@ -102,6 +107,15 @@ double calcTimeMemory(double timeArray[]) {
 	mode = modeCalc(timeArray);
 	//return the mode, if error, then -1 will be return
 	return mode;	
+}
+double calcTimeCache(double timeArray[]){
+	struct timespec start, end;
+	
+	for (int i = 0; i < arraySize; i++){
+		//using time library to get the current time and the address of start
+		clock_gettime(CLOCK_REALTIME, &start);
+	}
+		
 }
 
 double modeCalc(double timeArray[]){
