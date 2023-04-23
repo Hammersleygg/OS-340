@@ -10,6 +10,7 @@ double cacheSize(double byteSize);
 
 char arrChars [arraySize][arraySize];
 char arrChars2 [arraySize][arraySize];
+double calcTimeMemory(double array[]);
 
 int main() {
 	double calcBlockSize = blockSize();
@@ -54,16 +55,18 @@ double cacheSize(double byteSize) {
 }
 
 double calcTimeMemory(double timeArray[]) {
-	//set -1 for errors
-	double err = -1.00;
+	//set as -1 if errors
+	double mode = -1.00;
 	
 	int temp = 0;
 	int temp2 = 0;
 	
-	struct timeSpec start, end;
+	//struct for time
+	struct timespec start, end;
 	
-	//getting time 
-	for(int i = 0; i < arraySize; i++) {
+	//getting time
+	for(int i = 0; i < arraySize; i++){
+		//initialize random index 
 		int randomArrX1 = rand() % arraySize;
 		int randomArrY1 = rand() % arraySize;
 		
@@ -73,27 +76,47 @@ double calcTimeMemory(double timeArray[]) {
 		//first array
 		temp += arrChars[randomArrX1][randomArrY1];
 		
-		//starting clock
+		//start clock
 		clock_gettime(CLOCK_REALTIME, &start);
-		
 		temp2 += arrChars2[randomArrX2][randomArrY2];
-		
-		//ending clock
 		clock_gettime(CLOCK_REALTIME, &end);
 		
-		//calc time 
+		//calculate amount of time
 		long seconds = end.tv_sec - start.tv_sec;
-		long nano = end.tv_nsec - start.tv_nsec;
+		long nanoseconds = end.tv_nsec - start.tv_nsec;
 		
-		//1e-9 total second in nanosecond
-		double totalTime = seconds + nano * 1e-9;
+		//1e-9 total seconds in nanoseconds
+		double time_taken = seconds + nanoseconds * 1e-9;
 		
 		//store in array
-		timeArray[i] = totalTime;
+		timeArray[i] = time_taken;
 	}
 	
+	//find mode of times for a maim memory reference
+	mode = modeCalc(timeArray);
+	//return the mode, if error, then -1 will be return
+	return mode;	
+}
+
+double modeCalc(double timeArray[]){
+	//if error, -2
+	double mode = -2.00;
+	
+	//counter
+	int count = 0;
 	
 	//mode
-	err = modeCalc(timeArray);
-	return err;
+	for(int i = 0; i < arraySize; i++) {
+		int counter = 0;
+		for(int j = 0; j < arraySize; j++) {
+			if(timeArray[i] == timeArray[j]) {
+				counter++;
+			}
+			if(counter > count) {
+				mode = timeArray[i];
+				count = counter;
+			}
+		}
+	}
+	return mode;
 }
