@@ -11,7 +11,7 @@ double cacheSize(double byteSize);
 char arrChars [arraySize][arraySize];
 char arrChars2 [arraySize][arraySize];
 double calcTimeMemory(double array[]);
-double calcTimeCache(double timeArray[]);
+double calcTimeCache(double array[]);
 double modeCalc(double timeArray[]);
 
 int main() {
@@ -27,8 +27,8 @@ int main() {
 	double modeMainMem = calcTimeMemory(timeArray);
 	printf("Maim memory reference takes %f nanoseconds\n", modeMainMem * 1000000000);
 	
-	double modeCacheMem = calcTimeCache(timeArray);
-	printf("Maim memory reference takes %f nanoseconds\n", modeMainMem * 1000000000);
+	float modeCacheMem = calcTimeCache(timeArray);
+	printf("Maim memory reference takes %f nanoseconds\n", modeCacheMem * 1000000000);
 }
 
 double blockSize(){
@@ -109,13 +109,46 @@ double calcTimeMemory(double timeArray[]) {
 	return mode;	
 }
 double calcTimeCache(double timeArray[]){
+	double sumInterval = 0, sumInterval2 = 0;
 	struct timespec start, end;
 	
-	for (int i = 0; i < arraySize; i++){
+	for (int l = 0; l < arraySize; l++){
 		//using time library to get the current time and the address of start
 		clock_gettime(CLOCK_REALTIME, &start);
+		for (int i = 0; i < arraySize; i++){ 
+			for (int j = 0; j < arraySize; j++){
+					arrChars[i][j] = arrChars[i][j] + (arrChars[i][j] * arrChars[i][j]);
+			}
+		}
+		//end clock for ROW
+		clock_gettime(CLOCK_REALTIME, &end);
+		long seconds = end.tv_sec - start.tv_sec;
+		long nanoseconds = end.tv_nsec - start.tv_nsec;
+		sumInterval = seconds + (nanoseconds * 1e-9); //1e-9 nanoseconds in a second
+		timeArray[l] = sumInterval;
+	} //repeat for the column
+	//now need to calculate the row
+	double calcRow = modeCalc(timeArray);
+	
+	struct timespec start2, end2;
+	for (int m = 0; m < arraySize; m++){
+		clock_gettime(CLOCK_REALTIME, &start2);
+			for (int i = 0; i < arraySize; i++){
+				for(int j = 0; j < arraySize; j++){
+					arrChars2[i][j] = arrChars2[i][j] + (arrChars2[i][j] * arrChars2[i][j]);
+				}
+			}
+		//stop the clock
+		clock_gettime(CLOCK_REALTIME, &end2);
+		long seconds2 = end2.tv_sec - start2.tv_sec;
+		long nanoseconds2 = end2.tv_nsec - start2.tv_nsec;
+		sumInterval2 = seconds2 + (nanoseconds2 * 1e-9);
+		timeArray[m] = sumInterval2;
 	}
-		
+	double calcColumn = modeCalc(timeArray);
+	
+	double calcRowCol = calcRow + calcColumn;
+	return (calcRowCol * 100);
 }
 
 double modeCalc(double timeArray[]){
