@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <time.h>
 #include <math.h>
+#include <unistd.h>
 
 double blockSize();
 double cacheSize(double byteSize);
@@ -16,8 +17,7 @@ double modeCalc(double timeArray[]);
 
 int main() {
 	double timeArray[arraySize];
-
-
+	
 	double calcBlockSize = blockSize();
 	printf("Block size is: %1f\n", calcBlockSize);
 	
@@ -49,7 +49,7 @@ double blockSize(){
 }
 
 double cacheSize(double byteSize) {
-	int cacheArray = 128;
+	int cacheArray = 1448;
 	char myArray[cacheArray][cacheArray];
 	
 	for(int i = 0; i < cacheArray; i++){
